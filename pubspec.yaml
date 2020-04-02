@@ -1,7 +1,7 @@
 name: dnetty
 description: Dart Netty
 version: 0.0.1
-author: yanhxcn@gmail.com
+author: YanhxCN <yanhxcn@gmail.com>
 homepage: https://github.com/YanhxCN/dnetty
 
 environment:
@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  protobuf: ^1.0.1
+  uuid: ^2.0.4
 
 dev_dependencies:
   flutter_test:
