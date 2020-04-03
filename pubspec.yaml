@@ -1,6 +1,6 @@
 name: dnetty
 description: Dart Netty
-version: 0.0.1
+version: 0.0.2
 author: YanhxCN <yanhxcn@gmail.com>
 homepage: https://github.com/YanhxCN/dnetty
 
@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   protobuf: ^1.0.1
+  fixnum: ^0.10.11
   uuid: ^2.0.4
 
 dev_dependencies:

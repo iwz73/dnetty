@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:dnetty/dnetty.dart';
+import 'package:dnetty/src/bootstrap/bootstrap.dart';
+import 'package:dnetty/src/channel/channel_future.dart';
 
-import 'codec/length_field_prepender.dart';
+import 'channel/channel.dart';
+import 'channel/channel_package.dart';
 
 /// SocketClient
 class SocketClient {
@@ -33,17 +36,13 @@ class SocketClient {
     bus = new EventBus();
   }
 
-  Future<Null> startClient(String host, int port, [String fromId, String token]) async {
-    await Socket.connect(host, port).then((socket) {
-      _socket = socket;
-      if(fromId != null && fromId != '' && token != null && token != '') {
-        sendMsg(_buildHandshake(fromId, token));
-      }
-    });
-    _socket.listen(decodeHandle,
-        onError: errorHandler,
-        onDone: doneHandler,
-        cancelOnError: false);
+  Future<ChannelFuture> startClient(String host, int port, [String fromId, String token]) async {
+    Bootstrap bootstrap = Bootstrap();
+    bootstrap.channel(Channel())
+        .remoteAddress(host, port)
+        .handler(ChannelPipeline().addLast(LengthFieldPrepender(2)));
+     ChannelFuture channelFuture = await bootstrap.connect();
+     return channelFuture;
   }
 
   Msg _buildHandshake(String fromId, String token) {
@@ -62,7 +61,6 @@ class SocketClient {
     Msg msg = Msg.fromBuffer(data.sublist(2));
     switch (msg.head.msgType){
       case MsgType.PERSONAL:
-        //登录成功后触发登录事件，页面A中订阅者会被调用
         bus.emit(MsgType.PERSONAL, msg);
         break;
     }
@@ -79,7 +77,7 @@ class SocketClient {
   }
 
   static sendMsg(Msg msg) {
-    LengthFieldPrepender encode = new LengthFieldPrepender(2);
+    LengthFieldPrepender encode = LengthFieldPrepender(2);
     _socket.add(encode.encode(msg));
   }
 }
