@@ -25,7 +25,7 @@ class Channel {
   write(Object obj) {
     List<ChannelHandler> handlerList = channelPipeline.handlerList;
     handlerList.forEach((element) {
-      Object encodeResult = element.encode(obj);
+      Object encodeResult = element;
       if(encodeResult is List<int>) {
         socket.add(encodeResult);
       }
